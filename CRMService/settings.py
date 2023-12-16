@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt.token_blacklist",
     "drf_yasg",
     "corsheaders",
+    "celery",
 
     "events",
     "users",
@@ -266,3 +267,13 @@ CORS_URLS_REGEX = r"^/.*$"
 # TELEGRAM BOT
 TELEGRAM_BOT_TOKEN = config.get("TELEGRAM_BOT_TOKEN")
 ADMIN_ID = config.get("ADMIN_ID")
+
+# DEBUG TOOLBAR
+
+INTERNAL_IPS = [
+    "127.0.0.1",
+]
+
+# CELERY
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'

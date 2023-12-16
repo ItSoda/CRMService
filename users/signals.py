@@ -6,6 +6,7 @@ from django.dispatch import receiver
 from django.utils.timezone import now
 
 from users.models import EmailPost, Users
+from users.tasks import send_email_verify
 
 
 # По любым вопросам к доке https://docs.djangoproject.com/en/4.2/ref/signals/
@@ -14,8 +15,4 @@ def user_post_save(created, **kwargs):
     instance = kwargs["instance"]
     if created:
         user = Users.objects.get(id=instance.id)
-        expiration = now() + timedelta(hours=24)
-        record = EmailPost.objects.create(
-            code=uuid.uuid4(), user=user, expiration=expiration
-        )
-        record.send_verification_email()
+        send_email_verify.delay(user.id)
