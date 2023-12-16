@@ -1,11 +1,8 @@
 from django.urls import include, path
 from rest_framework import routers
 
-from .views import (
-    EmailVerificationAndUserUpdateView,
-    UserViewSets,
-    UserSearchView
-)
+from .views import (EmailVerificationAndUserUpdateView, UserSearchView,
+                    UserViewSets)
 
 app_name = "users"
 

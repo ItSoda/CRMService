@@ -1,13 +1,18 @@
-from rest_framework.viewsets import ModelViewSet
-from events.permissions import IsCreatorUser
-from events.services import event_update_participation, event_update_winner, user_update_participation, user_update_winner
-from .models import Events, Reviews, Teams
-from .serializers import EventSerializer, EventCreateSerializer, ReviewSerializer, ReviewCreateSerializer, TeamCreateSerializer, TeamSerializer
-from rest_framework.permissions import AllowAny
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from rest_framework.decorators import api_view
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+from rest_framework.viewsets import ModelViewSet
+
+from events.permissions import IsCreatorUser
+from events.services import (event_update_participation, event_update_winner,
+                             user_update_participation, user_update_winner)
+
+from .models import Events, Reviews, Teams
+from .serializers import (EventCreateSerializer, EventSerializer,
+                          ReviewCreateSerializer, ReviewSerializer,
+                          TeamCreateSerializer, TeamSerializer)
 
 
 class EventViewSet(ModelViewSet):
@@ -22,7 +27,7 @@ class EventViewSet(ModelViewSet):
     def create(self, request, *args, **kwargs):
         self.get_serializer = EventCreateSerializer
         return super().create(request, *args, **kwargs)
-    
+
 
 @api_view(["POST"])
 def add_participants(request, event_id):
@@ -33,7 +38,13 @@ def add_participants(request, event_id):
         event = event_update_participation(user_id, event_id)
 
         serializer_data = EventSerializer(event).data
-        return Response({"status_code": 200, "data": serializer_data, "detail": "Participant add in events"})
+        return Response(
+            {
+                "status_code": 200,
+                "data": serializer_data,
+                "detail": "Participant add in events",
+            }
+        )
     except Exception as e:
         return Response({"status_code": 500, "data": [], "detail": f"Error: {str(e)}"})
 
@@ -47,7 +58,13 @@ def add_winners(request, event_id):
         event = event_update_winner(user_id, event_id)
 
         serializer_data = EventSerializer(event).data
-        return Response({"status_code": 200, "data": serializer_data, "detail": "Winner add in events"})
+        return Response(
+            {
+                "status_code": 200,
+                "data": serializer_data,
+                "detail": "Winner add in events",
+            }
+        )
     except Exception as e:
         return Response({"status_code": 500, "data": [], "detail": f"Error: {str(e)}"})
 
@@ -64,7 +81,7 @@ class TeamViewSet(ModelViewSet):
     def create(self, request, *args, **kwargs):
         self.get_serializer = TeamCreateSerializer
         return super().create(request, *args, **kwargs)
-    
+
 
 class ReviewViewSet(ModelViewSet):
     queryset = Reviews.objects.all()
@@ -78,12 +95,12 @@ class ReviewViewSet(ModelViewSet):
             permission_classes = [AllowAny]
 
         return [permission() for permission in permission_classes]
-    
+
     def get_queryset(self):
         queryset = super().get_queryset()
         event_id = self.request.GET.get("event_id")
         return queryset.filter(event=event_id)
-    
+
     @method_decorator(cache_page(100))
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)

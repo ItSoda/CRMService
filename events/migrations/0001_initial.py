@@ -4,56 +4,86 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Events',
+            name="Events",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100, unique=True)),
-                ('image', models.ImageField(upload_to='events_images')),
-                ('description', models.TextField()),
-                ('award', models.CharField(blank=True, max_length=256, null=True)),
-                ('rule', models.TextField()),
-                ('tasks', models.TextField(blank=True, null=True)),
-                ('faq', models.TextField(blank=True, null=True)),
-                ('chat', models.CharField(blank=True, max_length=100, null=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('ended_at', models.DateTimeField(blank=True, null=True)),
-                ('text_for_email', models.TextField(blank=True, null=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=100, unique=True)),
+                ("image", models.ImageField(upload_to="events_images")),
+                ("description", models.TextField()),
+                ("award", models.CharField(blank=True, max_length=256, null=True)),
+                ("rule", models.TextField()),
+                ("tasks", models.TextField(blank=True, null=True)),
+                ("faq", models.TextField(blank=True, null=True)),
+                ("chat", models.CharField(blank=True, max_length=100, null=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("ended_at", models.DateTimeField(blank=True, null=True)),
+                ("text_for_email", models.TextField(blank=True, null=True)),
             ],
         ),
         migrations.CreateModel(
-            name='Reviews',
+            name="Reviews",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('text', models.TextField()),
-                ('rating', models.IntegerField()),
-                ('created', models.DateTimeField(auto_now_add=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("text", models.TextField()),
+                ("rating", models.IntegerField()),
+                ("created", models.DateTimeField(auto_now_add=True)),
             ],
             options={
-                'verbose_name': 'отзыву',
-                'verbose_name_plural': 'Отзывы',
+                "verbose_name": "отзыву",
+                "verbose_name_plural": "Отзывы",
             },
         ),
         migrations.CreateModel(
-            name='Tags',
+            name="Tags",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100, unique=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=100, unique=True)),
             ],
         ),
         migrations.CreateModel(
-            name='Teams',
+            name="Teams",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100)),
-                ('description', models.TextField(blank=True, null=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=100)),
+                ("description", models.TextField(blank=True, null=True)),
             ],
         ),
     ]

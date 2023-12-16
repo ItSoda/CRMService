@@ -1,8 +1,8 @@
 import os
 from datetime import timedelta
 from pathlib import Path
-from decouple import RepositoryEnv, Config
 
+from decouple import Config, RepositoryEnv
 
 docker = os.environ.get("DOCKER_CONTAINER")
 
@@ -46,7 +46,6 @@ INSTALLED_APPS = [
     "drf_yasg",
     "corsheaders",
     "celery",
-
     "events",
     "users",
     "tgbot",
@@ -89,9 +88,9 @@ DATABASES = {
         "ENGINE": "django.db.backends.mysql",
         "NAME": config.get("MYSQL_DATABASE", default="CRMService"),
         "USER": config.get("MYSQL_ROOT_USER", default="root"),
-        "PASSWORD":config.get("MYSQL_ROOT_PASSWORD", default="nik140406"),
+        "PASSWORD": config.get("MYSQL_ROOT_PASSWORD", default="nik140406"),
         "HOST": config.get("MYSQL_HOST", default="localhost"),
-        "PORT": config.get("MYSQL_PORT", default="3306")
+        "PORT": config.get("MYSQL_PORT", default="3306"),
     }
 }
 
@@ -275,5 +274,5 @@ INTERNAL_IPS = [
 ]
 
 # CELERY
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_BROKER_URL = f"redis://{REDIS_HOST}:6379/0"
+CELERY_RESULT_BACKEND = f"redis://{REDIS_HOST}:6379/0"

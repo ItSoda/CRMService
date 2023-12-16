@@ -1,17 +1,15 @@
-from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet
-from rest_framework.views import APIView
-from rest_framework.generics import ListAPIView
-from .serializers import UserSerializer
-from users.services import (
-    EmailVerificationHandler,
-    users_search
-)
-
-from .models import Users
-from rest_framework.permissions import AllowAny, IsAdminUser
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
+from rest_framework.generics import ListAPIView
+from rest_framework.permissions import AllowAny, IsAdminUser
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework.viewsets import ModelViewSet
+
+from users.services import EmailVerificationHandler, users_search
+
+from .models import Users
+from .serializers import UserSerializer
 
 
 class UserViewSets(ModelViewSet):
@@ -41,7 +39,6 @@ class UserSearchView(ListAPIView):
         # Используйте фильтр для поиска товаров по имени (или другим полям) по запросу
         queryset = users_search(query)
         return queryset
-
 
 
 class EmailVerificationAndUserUpdateView(APIView):

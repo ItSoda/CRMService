@@ -1,9 +1,11 @@
 from django.db import models
+
 from users.models import Users
 
 
 class Tags(models.Model):
     """Model for tags"""
+
     name = models.CharField(max_length=100, unique=True)
 
     def __str__(self) -> str:
@@ -12,6 +14,7 @@ class Tags(models.Model):
 
 class Teams(models.Model):
     """Model for teams"""
+
     name = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)
     members = models.ManyToManyField(to=Users)
@@ -30,7 +33,9 @@ class Events(models.Model):
     rule = models.TextField()
     teams = models.ManyToManyField(to=Teams, related_name="events_teams")
     participian = models.ManyToManyField(to=Users, related_name="events_participian")
-    winners = models.ManyToManyField(to=Users, blank=True, related_name="events_winners")
+    winners = models.ManyToManyField(
+        to=Users, blank=True, related_name="events_winners"
+    )
     tags = models.ManyToManyField(to=Tags)
     creator = models.ForeignKey(to=Users, on_delete=models.CASCADE)
     tasks = models.TextField(null=True, blank=True)
@@ -48,7 +53,7 @@ class Events(models.Model):
 class ReviewQuerySet(models.QuerySet):
     def total_rating(self):
         if self.count() > 0:
-            return round(sum([review.rating for review in self])/self.count(), 2)
+            return round(sum([review.rating for review in self]) / self.count(), 2)
         else:
             return 0.0
 
@@ -56,7 +61,7 @@ class ReviewQuerySet(models.QuerySet):
 class ReviewManager(models.Manager):
     def get_queryset(self):
         return ReviewQuerySet(self.model)
-    
+
     def total_rating(self):
         return self.get_queryset().total_rating()
 

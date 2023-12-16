@@ -1,7 +1,8 @@
 from django.urls import include, path
 from rest_framework import routers
 
-from .views import EventViewSet, ReviewViewSet, TeamViewSet, add_participants, add_winners
+from .views import (EventViewSet, ReviewViewSet, TeamViewSet, add_participants,
+                    add_winners)
 
 app_name = "animals"
 

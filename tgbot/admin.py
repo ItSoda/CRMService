@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Tg_Bot, News
+from .models import News, Tg_Bot
 
 
 @admin.register(Tg_Bot)

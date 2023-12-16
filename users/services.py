@@ -42,9 +42,7 @@ class EmailVerificationHandler:
         from users.models import EmailPost, Users
 
         user = get_object_or_404(Users, email=self.email)
-        email_verifications = EmailPost.objects.filter(
-            code=self.code, user=user
-        )
+        email_verifications = EmailPost.objects.filter(code=self.code, user=user)
         try:
             if (
                 email_verifications.exists()

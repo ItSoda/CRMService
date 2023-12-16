@@ -1,8 +1,9 @@
 from rest_framework import serializers
 
-from .models import Events, Tags, Reviews, Teams
-from users.serializers import ImageFieldFromURL, UserSerializer
 from users.models import Users
+from users.serializers import ImageFieldFromURL, UserSerializer
+
+from .models import Events, Reviews, Tags, Teams
 
 
 class TagSerializer(serializers.Serializer):
@@ -13,7 +14,7 @@ class TagSerializer(serializers.Serializer):
 
 class TeamCreateSerializer(serializers.Serializer):
     members = serializers.ListField(child=serializers.IntegerField(), write_only=True)
-    
+
     class Meta:
         model = Teams
         fields = "__all__"
@@ -27,7 +28,9 @@ class TeamCreateSerializer(serializers.Serializer):
 
     def update(self, instance, validated_data):
         members_ids = validated_data.pop("members")
-        if not [member for member in members_ids if member in instance.events_participian]:
+        if not [
+            member for member in members_ids if member in instance.events_participian
+        ]:
             instance.members.add(members_ids)
             return instance
 
@@ -42,11 +45,13 @@ class TeamSerializer(serializers.Serializer):
 
 class EventCreateSerializer(serializers.ModelSerializer):
     teams = serializers.ListField(child=serializers.IntegerField(), write_only=True)
-    participian = serializers.ListField(child=serializers.IntegerField(), write_only=True)
+    participian = serializers.ListField(
+        child=serializers.IntegerField(), write_only=True
+    )
     winners = serializers.ListField(child=serializers.IntegerField(), write_only=True)
     tags = serializers.ListField(child=serializers.IntegerField(), write_only=True)
     creator = serializers.IntegerField(write_only=True)
-    
+
     class Meta:
         model = Events
         fields = "__all__"
@@ -58,7 +63,7 @@ class EventCreateSerializer(serializers.ModelSerializer):
         tags_ids = validated_data.pop("tags")
         creator_id = validated_data.pop("creator")
         creator = Users.objects.get(id=creator_id)
-        
+
         instance = Events.objects.create(creator=creator, **validated_data)
         instance.teams.set(teams_ids)
         instance.participian.set(participian_ids)
@@ -74,7 +79,7 @@ class EventSerializer(serializers.ModelSerializer):
     winners = UserSerializer(many=True)
     creator = UserSerializer()
     image = ImageFieldFromURL()
-    
+
     class Meta:
         model = Events
         fields = "__all__"
@@ -83,7 +88,6 @@ class EventSerializer(serializers.ModelSerializer):
 class ReviewCreateSerializer(serializers.ModelSerializer):
     event = serializers.IntegerField(write_only=True)
     user = serializers.IntegerField(write_only=True)
-    
 
     class Meta:
         model = Reviews
@@ -107,4 +111,3 @@ class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Reviews
         fields = "__all__"
-

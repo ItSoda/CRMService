@@ -1,13 +1,15 @@
 from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.db import models
 
-from users.services import is_expired, send_email_everyone, send_verification_email
+from users.services import (is_expired, send_email_everyone,
+                            send_verification_email)
 
 from .managers import CustomUserManager
 
 
 class Roles(models.Model):
     """Model for roles"""
+
     name = models.CharField(max_length=100, unique=True)
 
     class Meta:
@@ -32,7 +34,7 @@ class Users(AbstractUser):
     create_event = models.IntegerField(default=0)
     wins = models.IntegerField(default=0)
     roles = models.ManyToManyField(to=Roles, blank=True, related_name="users_roles")
-    
+
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
 

@@ -1,11 +1,13 @@
+import urllib.request
 from io import BytesIO
+
 import requests
 import telebot
 from django.conf import settings
-from telebot import types
 from django.core.files import File
-import urllib.request
-from .models import Tg_Bot, News
+from telebot import types
+
+from .models import News, Tg_Bot
 
 # Вставляем токен бота
 bot = telebot.TeleBot(settings.TELEGRAM_BOT_TOKEN)
@@ -21,7 +23,10 @@ def handle_start(message):
 
     try:
         if Tg_Bot.objects.get(user_id=user_id):
-            bot.reply_to(message, f"Мы всегда с вами {first_name}! Воспользуйся /help для подробной информации")
+            bot.reply_to(
+                message,
+                f"Мы всегда с вами {first_name}! Воспользуйся /help для подробной информации",
+            )
 
     except Tg_Bot.DoesNotExist:
         Tg_Bot.objects.create(
@@ -30,11 +35,15 @@ def handle_start(message):
             first_name=first_name,
             last_name=last_name,
         )
-        bot.send_message(message.chat.id, f"Привет, {first_name}! Воспользуйся /help для подробной информации")
+        bot.send_message(
+            message.chat.id,
+            f"Привет, {first_name}! Воспользуйся /help для подробной информации",
+        )
+
 
 # Рассылка всем пользователям от лица админа
 @bot.message_handler(commands=["send_message"])
-def send_message(message):    
+def send_message(message):
     if int(settings.ADMIN_ID) == int(message.chat.id):
         markup = types.ForceReply(selective=False)
         bot.send_message(
@@ -66,10 +75,7 @@ def process_photo(message, text):
         for user in users:
             try:
                 bot.send_photo(user.user_id, photo, caption=text)
-                News.objects.create(
-                    text=text,
-                    photo=photo
-                )
+                News.objects.create(text=text, photo=photo)
             except Exception as e:
                 print(f"Произошла ошибка {e}")
         else:
@@ -87,7 +93,7 @@ def process_photo(message, text):
                 print(f"Произошла ошибка {e}")
 
 
-@bot.message_handler(commands=['news'])
+@bot.message_handler(commands=["news"])
 def news(message):
     news = News.objects.all()
 
@@ -99,14 +105,18 @@ def news(message):
         else:
             bot.send_message(message.chat.id, f"{new.text}")
 
+
 def send_photo_with_caption(bot, chat_id, photo_path, caption):
     with open(photo_path, "rb") as photo:
         bot.send_photo(chat_id, photo, caption=caption)
-    
 
-@bot.message_handler(commands=['app'])
+
+@bot.message_handler(commands=["app"])
 def app(message):
-    bot.send_message(message.chat.id, "Скачайте наше бесплатное приложение по ссылке: https..")
+    bot.send_message(
+        message.chat.id, "Скачайте наше бесплатное приложение по ссылке: https.."
+    )
+
 
 @bot.message_handler(commands=["help"])
 def help(message):
@@ -117,6 +127,7 @@ def help(message):
         parse_mode="html",
     )
 
+
 # Ловит любое сообщение
 @bot.message_handler()
 def info(message):
@@ -124,8 +135,10 @@ def info(message):
         bot.reply_to(message, f"ID: {message.from_user.id}")
     bot.reply_to(message, f"Лучше поучаствуйте в одном из мероприятий в CRMService! ;)")
 
+
 def start_bot():
     bot.polling(non_stop=True)
+
 
 def stop_bot():
     bot.stop_polling()
