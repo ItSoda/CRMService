@@ -1,16 +1,14 @@
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.views import APIView
 from events.permissions import IsCreatorUser
-from events.services import event_update_participation, event_update_winner, user_update_create_event, user_update_participation, user_update_winner
-from .models import Events, Reviews
-from .serializers import EventSerializer, EventCreateSerializer, ReviewSerializer, ReviewCreateSerializer
+from events.services import event_update_participation, event_update_winner, user_update_participation, user_update_winner
+from .models import Events, Reviews, Teams
+from .serializers import EventSerializer, EventCreateSerializer, ReviewSerializer, ReviewCreateSerializer, TeamCreateSerializer, TeamSerializer
 from rest_framework.permissions import AllowAny
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from django.shortcuts import get_object_or_404
-from users.models import Users
+
 
 class EventViewSet(ModelViewSet):
     queryset = Events.objects.all()
@@ -53,6 +51,20 @@ def add_winners(request, event_id):
     except Exception as e:
         return Response({"status_code": 500, "data": [], "detail": f"Error: {str(e)}"})
 
+
+class TeamViewSet(ModelViewSet):
+    queryset = Teams.objects.all()
+    serializer_class = TeamSerializer
+    permission_classes = (AllowAny,)
+
+    @method_decorator(cache_page(70))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+    def create(self, request, *args, **kwargs):
+        self.get_serializer = TeamCreateSerializer
+        return super().create(request, *args, **kwargs)
+    
 
 class ReviewViewSet(ModelViewSet):
     queryset = Reviews.objects.all()

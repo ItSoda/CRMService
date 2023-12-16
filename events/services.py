@@ -12,13 +12,13 @@ def get_event(event_id):
 def user_update_participation(user_id, event_id):
     user = get_object_or_404(Users, id=user_id)
     event = get_event(event_id=event_id)
-    if not event.participants.filter(id=user_id).exists():
+    if not event.participian.filter(id=user_id).exists():
         user.participation = user.participation + 1
         user.save()
 
 def event_update_participation(user_id, event_id):
     event = get_event(event_id=event_id)
-    event.participants.add(user_id)
+    event.participian.add(user_id)
     event.save()
     
     return event

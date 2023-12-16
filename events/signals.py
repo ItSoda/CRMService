@@ -13,6 +13,6 @@ def update_user_field(sender, instance, created, **kwargs):
         user.create_event = user.create_event + 1
         user.save()
 
-        users = Users.objects.all()
+        users = instance.participian.all()
         send_email_new.delay(users, instance)
 

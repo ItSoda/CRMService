@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Events, Tags, Reviews
+from .models import Events, Tags, Reviews, Teams
 
 @admin.register(Tags)
 class TagAdmin(admin.ModelAdmin):
@@ -9,9 +9,13 @@ class TagAdmin(admin.ModelAdmin):
 @admin.register(Events)
 class EventAdmin(admin.ModelAdmin):
     list_display = ("name",)
-    filter_horizontal = ["participants", "winners", "tags"]
-
+    filter_horizontal = ["participian", "winners", "tags", "teams"]
 
 @admin.register(Reviews)
 class ReviewAdmin(admin.ModelAdmin):
     list_display = ("event",)
+
+@admin.register(Teams)
+class TeamAdmin(admin.ModelAdmin):
+    list_display = ("name",)
+    filter_horizontal = ["members"]

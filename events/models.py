@@ -3,8 +3,18 @@ from users.models import Users
 
 
 class Tags(models.Model):
-    "Model for tags"
+    """Model for tags"""
     name = models.CharField(max_length=100, unique=True)
+
+    def __str__(self) -> str:
+        return f"name: {self.name}"
+
+
+class Teams(models.Model):
+    """Model for teams"""
+    name = models.CharField(max_length=100)
+    description = models.TextField(null=True, blank=True)
+    members = models.ManyToManyField(to=Users)
 
     def __str__(self) -> str:
         return f"name: {self.name}"
@@ -18,7 +28,8 @@ class Events(models.Model):
     description = models.TextField()
     award = models.CharField(max_length=256, null=True, blank=True)
     rule = models.TextField()
-    participants = models.ManyToManyField(to=Users, related_name="events_TEAMS")
+    teams = models.ManyToManyField(to=Teams, related_name="events_teams")
+    participian = models.ManyToManyField(to=Users, related_name="events_participian")
     winners = models.ManyToManyField(to=Users, blank=True, related_name="events_winners")
     tags = models.ManyToManyField(to=Tags)
     creator = models.ForeignKey(to=Users, on_delete=models.CASCADE)
