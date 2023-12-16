@@ -49,7 +49,6 @@ def user_update_create_event(user):
 
 
 def get_team(user_id):
-    user = Users.objects.get(id=user_id)
     team = Teams.objects.filter(members__id=user_id).first()
     if team:
         return team
