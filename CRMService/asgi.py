@@ -24,6 +24,7 @@ from chats import routing
 application = ProtocolTypeRouter(
     {
         "http": get_asgi_application(),
+        # закончить чаты в будущем
         "websocket": JwtAuthMiddlewareStack(URLRouter(routing.websocket_urlpatterns)),
     }
 )
