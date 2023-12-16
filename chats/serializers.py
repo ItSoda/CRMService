@@ -1,12 +1,15 @@
-from .models import Room, Message
 from rest_framework import serializers
-from users.serializers import UserSerializer
-from users.serializers import ImageFieldFromURL
+
+from users.serializers import ImageFieldFromURL, UserSerializer
+
+from .models import Message, Room
+
 
 class MessageSerializer(serializers.ModelSerializer):
     created_at_formatted = serializers.SerializerMethodField()
     sender = UserSerializer()
     image = ImageFieldFromURL()
+
     class Meta:
         model = Message
         exclude = []

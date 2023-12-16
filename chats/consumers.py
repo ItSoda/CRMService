@@ -1,20 +1,18 @@
 import json
 
-from asgiref.sync import sync_to_async, async_to_sync
+from asgiref.sync import async_to_sync, sync_to_async
 from channels.db import database_sync_to_async
-from djangochannelsrestframework.generics import GenericAsyncAPIConsumer
 from channels.generic.websocket import AsyncWebsocketConsumer
-from djangochannelsrestframework import mixins
-from djangochannelsrestframework.observer.generics import (
-    ObserverModelInstanceMixin,
-    action,
-)
-from djangochannelsrestframework.observer import model_observer
-
 from django.db.models import Q
+from djangochannelsrestframework import mixins
+from djangochannelsrestframework.generics import GenericAsyncAPIConsumer
+from djangochannelsrestframework.observer import model_observer
+from djangochannelsrestframework.observer.generics import (
+    ObserverModelInstanceMixin, action)
 
-from .models import Room, Message
 from users.models import Users
+
+from .models import Message, Room
 from .serializers import MessageSerializer, RoomSerializer, UserSerializer
 
 
@@ -73,7 +71,7 @@ class RoomConsumer(ObserverModelInstanceMixin, GenericAsyncAPIConsumer):
         return dict(
             data=MessageSerializer(instance).data, action=action.value, pk=room_id
         )
-    
+
     @database_sync_to_async
     def get_room(self, room_pk):
         return Room.objects.get(pk=room_pk)
@@ -123,8 +121,10 @@ class UserConsumer(
 
 
 import json
-from channels.generic.websocket import AsyncWebsocketConsumer
+
 from asgiref.sync import async_to_sync
+from channels.generic.websocket import AsyncWebsocketConsumer
+
 from .models import PersonalMessage
 
 
@@ -135,23 +135,17 @@ class UserChatConsumer(AsyncWebsocketConsumer):
         self.room_group_name = f"personalchat_{self.user_pk}"
 
         # Join room group
-        await self.channel_layer.group_add(
-            self.room_group_name,
-            self.channel_name
-        )
+        await self.channel_layer.group_add(self.room_group_name, self.channel_name)
 
         await self.accept()
 
     async def disconnect(self, close_code):
         # Leave room group
-        await self.channel_layer.group_discard(
-            self.room_group_name,
-            self.channel_name
-        )
+        await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
     async def receive(self, text_data):
         data = json.loads(text_data)
-        message = data['message']
+        message = data["message"]
         sender = self.scope["user"]
         receiver = await self.get_receiver(self.user_pk)
         # # Save message to database
@@ -159,20 +153,14 @@ class UserChatConsumer(AsyncWebsocketConsumer):
 
         # Send message to room group
         await self.channel_layer.group_send(
-            self.room_group_name,
-            {
-                'type': 'chat_message',
-                'message': message
-            }
+            self.room_group_name, {"type": "chat_message", "message": message}
         )
 
     async def chat_message(self, event):
-        message = event['message']
+        message = event["message"]
 
         # Send message to WebSocket
-        await self.send(text_data=json.dumps({
-            'message': message
-        }))
+        await self.send(text_data=json.dumps({"message": message}))
 
     @staticmethod
     @sync_to_async

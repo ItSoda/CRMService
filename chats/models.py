@@ -1,4 +1,5 @@
 from django.db import models
+
 from users.models import Users
 
 
@@ -21,7 +22,7 @@ class Message(models.Model):
     room = models.ForeignKey("Room", on_delete=models.CASCADE, related_name="messages")
     text = models.TextField(max_length=500)
     sender = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="messages")
-    image = models.ImageField(upload_to='message_images', null=True, blank=True)
+    image = models.ImageField(upload_to="message_images", null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -31,8 +32,12 @@ class Message(models.Model):
 class PersonalMessage(models.Model):
     """Model for personal messages"""
 
-    sender = models.ForeignKey(to=Users, on_delete=models.CASCADE, related_name="sent_messages")
-    receiver = models.ForeignKey(to=Users, on_delete=models.CASCADE, related_name="received_messages")
+    sender = models.ForeignKey(
+        to=Users, on_delete=models.CASCADE, related_name="sent_messages"
+    )
+    receiver = models.ForeignKey(
+        to=Users, on_delete=models.CASCADE, related_name="received_messages"
+    )
     text = models.TextField()
-    image = models.ImageField(upload_to='message_images', null=True, blank=True)
+    image = models.ImageField(upload_to="message_images", null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)

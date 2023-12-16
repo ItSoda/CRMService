@@ -17,7 +17,7 @@ class Teams(models.Model):
 
     name = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)
-    members = models.ManyToManyField(to=Users)
+    members = models.ManyToManyField(to=Users, related_name="users_members")
 
     def __str__(self) -> str:
         return f"name: {self.name}"

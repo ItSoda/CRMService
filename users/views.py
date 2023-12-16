@@ -1,14 +1,19 @@
 import json
+
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
+from rest_framework import status
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from yookassa.domain.notification import WebhookNotificationFactory
-from users.services import EmailVerificationHandler, create_auto_payment, create_payment, user_save_yookassa_payment_id, users_search
-from rest_framework import status
+
+from users.services import (EmailVerificationHandler, create_auto_payment,
+                            create_payment, user_save_yookassa_payment_id,
+                            users_search)
+
 from .models import Users
 from .serializers import UserSerializer
 

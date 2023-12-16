@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
 
-from events.models import Events
+from events.models import Events, Teams
 from users.models import Users
 
 
@@ -46,3 +46,11 @@ def event_update_winner(user_id, event_id):
 def user_update_create_event(user):
     user.create_event = user.create_event + 1
     user.save()
+
+
+def get_team(user_id):
+    user = Users.objects.get(id=user_id)
+    team = Teams.objects.filter(members__id=user_id).first()
+    if team:
+        return team
+    return []

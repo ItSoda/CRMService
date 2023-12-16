@@ -48,11 +48,10 @@ INSTALLED_APPS = [
     "corsheaders",
     "channels",
     "celery",
-
     "events",
     "users",
     "tgbot",
-    "chats"
+    "chats",
 ]
 
 MIDDLEWARE = [
