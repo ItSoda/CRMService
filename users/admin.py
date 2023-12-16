@@ -1,10 +1,10 @@
 from django.contrib import admin
 
-from .models import EmailVerifications, Users, Roles
+from .models import EmailPost, Users, Roles
 
 
 class EmailVerificationAdmin(admin.TabularInline):
-    model = EmailVerifications
+    model = EmailPost
     fields = ("expiration",)
     extra = 0
 

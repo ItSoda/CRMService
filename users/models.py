@@ -1,7 +1,7 @@
 from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.db import models
 
-from users.services import is_expired, send_verification_email
+from users.services import is_expired, send_email_everyone, send_verification_email
 
 from .managers import CustomUserManager
 
@@ -46,20 +46,23 @@ class Users(AbstractUser):
         return f"Пользователь {self.username} | {self.first_name}"
 
 
-class EmailVerifications(models.Model):
+class EmailPost(models.Model):
     """Model for one emailverifications"""
 
     code = models.UUIDField(unique=True)
     text = models.CharField(max_length=512, null=True, blank=True)
     user = models.ForeignKey(to=Users, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
-    expiration = models.DateTimeField()
+    expiration = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
-        return f"EmailVerification object for {self.user.email}"
+        return f"Email object for {self.user.email}"
 
     def send_verification_email(self):
         send_verification_email(self.user.email, self.code)
 
     def is_expired(self):
         is_expired(self)
+
+    def send_email_everyone(self):
+        send_email_everyone(self.user.email, self.text)

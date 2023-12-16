@@ -39,10 +39,10 @@ class EmailVerificationHandler:
         self.email = email
 
     def proccess_email_verification(self):
-        from users.models import EmailVerifications, Users
+        from users.models import EmailPost, Users
 
         user = get_object_or_404(Users, email=self.email)
-        email_verifications = EmailVerifications.objects.filter(
+        email_verifications = EmailPost.objects.filter(
             code=self.code, user=user
         )
         try:
@@ -56,6 +56,18 @@ class EmailVerificationHandler:
             return False
         except Exception as e:
             return False
+
+
+def send_email_everyone(user_email, message):
+    subjects = f"У нас новое событие {user_email}!"
+    message = message
+    send_mail(
+        subject=subjects,
+        message=message,
+        from_email=settings.EMAIL_HOST_USER,
+        recipient_list=[user_email],
+        fail_silently=False,
+    )
 
 
 def users_search(query):

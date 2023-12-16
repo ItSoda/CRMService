@@ -27,6 +27,7 @@ class Events(models.Model):
     chat = models.CharField(max_length=100, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     ended_at = models.DateTimeField(null=True, blank=True)
+    text_for_email = models.TextField(null=True, blank=True)
 
     def __str__(self) -> str:
         return f"name: {self.name} | tags: {self.tags.name}"
