@@ -33,6 +33,7 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
+    "daphne",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -45,10 +46,13 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt.token_blacklist",
     "drf_yasg",
     "corsheaders",
+    "channels",
     "celery",
+
     "events",
     "users",
     "tgbot",
+    "chats"
 ]
 
 MIDDLEWARE = [
@@ -81,6 +85,17 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "CRMService.wsgi.application"
+
+# Channels
+ASGI_APPLICATION = "CRMService.asgi.application"
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", "6379")],
+        },
+    },
+}
 
 # PARAMETRS FOR DATABASE
 DATABASES = {
