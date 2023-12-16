@@ -1,13 +1,14 @@
+import json
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from rest_framework.generics import ListAPIView
-from rest_framework.permissions import AllowAny, IsAdminUser
+from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
-
-from users.services import EmailVerificationHandler, users_search
-
+from yookassa.domain.notification import WebhookNotificationFactory
+from users.services import EmailVerificationHandler, create_auto_payment, create_payment, user_save_yookassa_payment_id, users_search
+from rest_framework import status
 from .models import Users
 from .serializers import UserSerializer
 
@@ -57,3 +58,41 @@ class EmailVerificationAndUserUpdateView(APIView):
             )
         except Exception:
             return Response({"EmailVerification": "Произошла ошибка"})
+
+
+class SubscriptionCreateView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request):
+        user = self.request.user
+        payment_url = create_payment(user, request)
+        # Перенаправка пользователя на страницу оплаты Юкассы
+        return Response(
+            {
+                "payment_url": payment_url,
+            }
+        )
+
+
+class YookassaWebhookView(APIView):
+    def post(self, request):
+        event_json = json.loads(request.body.decode("utf-8"))
+        user_id = event_json["object"]["metadata"].get("user_id")
+        try:
+            notification = WebhookNotificationFactory().create(event_json)
+            # Проверяем статус платежа
+            if notification.object.status == "succeeded":
+                # Проверяем сохранен ли метод оплаты
+                if notification.object.payment_method.saved:
+                    # Добавляем yookassa_payment_id пользователю
+                    user = user_save_yookassa_payment_id(user_id, notification)
+                    create_auto_payment(user)
+        except Exception as e:
+            # Обработка ошибок при разборе уведомления
+            return Response(
+                {"message": "Payment ID не создан. Произошла ошибка"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        return Response(
+            {"message": "Payment ID сохранен успешно"}, status=status.HTTP_200_OK
+        )

@@ -34,6 +34,7 @@ class Users(AbstractUser):
     create_event = models.IntegerField(default=0)
     wins = models.IntegerField(default=0)
     roles = models.ManyToManyField(to=Roles, blank=True, related_name="users_roles")
+    yookassa_payment_id = models.CharField(max_length=100, null=True, blank=True)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []

@@ -248,6 +248,12 @@ DEFAULT_FROM_EMAIL = config.get("DEFAULT_FROM_EMAIL")
 CSRF_TRUSTED_ORIGINS = ["https://boar-still-alpaca.ngrok-free.app"]
 
 
+# yookassa
+YOOKASSA_REDIRECT_URL = "/admin/"
+YOOKASSA_SHOP_ID = config.get("YOOKASSA_SHOP_ID")
+YOOKASSA_SECRET_KEY = config.get("YOOKASSA_SECRET_KEY")
+
+
 # CORS
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:50000",

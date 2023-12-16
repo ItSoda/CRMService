@@ -72,3 +72,60 @@ def users_search(query):
     from users.models import Users
 
     Users.objects.filter(name__icontains=query)
+
+
+# YOOKASSA PAYMENT
+def create_payment(user, request):
+    from django.conf import settings
+    from yookassa import Configuration, Payment
+
+    # Настройте ключи доступа
+    Configuration.account_id = settings.YOOKASSA_SHOP_ID
+    Configuration.secret_key = settings.YOOKASSA_SECRET_KEY
+    # Создайте объект платежа
+    payment = Payment.create(
+        {
+            "amount": {"value": "2000.00", "currency": "RUB"},
+            "payment_method_data": {"type": "bank_card"},
+            "confirmation": {
+                "type": "redirect",
+                "return_url": settings.YOOKASSA_REDIRECT_URL,
+            },
+            "capture": True,
+            "description": f"Платеж для пользователя {user.email}",
+            "save_payment_method": True,
+            "metadata": {"user_id": str(request.user.id)},
+        }
+    )
+    return payment.confirmation.confirmation_url
+
+
+def user_save_yookassa_payment_id(user_id, notification):
+    from users.models import Users
+
+    user = Users.objects.get(id=user_id)
+
+    user.yookassa_payment_id = notification.object.payment_method.id
+    user.save()
+    return user
+
+
+def create_auto_payment(user):
+    from datetime import datetime, timedelta
+
+    from yookassa import Configuration, Payment
+
+    Configuration.account_id = settings.YOOKASSA_SHOP_ID
+    Configuration.secret_key = settings.YOOKASSA_SECRET_KEY
+
+    start_date = (datetime.utcnow() + timedelta(days=30)).isoformat()
+    auto_payment = Payment.create(
+        {
+            "amount": {"value": "100.00", "currency": "RUB"},
+            "payment_method_id": f"{user.yookassa_payment_id}",
+            "description": f"Подписка на услугу для пользователя {user.email}",
+            "interval": "month",
+            "start_date": start_date,
+            "metadata": {"user_id": str(user.id)},
+        }
+    )

@@ -30,6 +30,7 @@ mysqlclient = "^2.2.1"
 djangochannelsrestframework = "^1.2.0"
 channels-redis = "^4.1.0"
 daphne = "^4.0.0"
+yookassa = "^3.0.0"
 
 [tool.poetry.group.dev.dependencies]
 flake8 = "5.0.4"
