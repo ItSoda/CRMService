@@ -29,7 +29,7 @@ class UserRegistSerializer(UserCreateSerializer):
         fields = ("id", "email", "username", "password")
 
 
-class UserProfile(UserSerializer):
+class UserProfileSerializer(UserSerializer):
     photo = ImageFieldFromURL()
 
     class Meta(UserSerializer.Meta):
@@ -43,3 +43,4 @@ class UserSerializer(UserSerializer):
     class Meta(UserSerializer.Meta):
         model = Users
         fields = ("id", "username", "last_name", "first_name", "photo")
+        ref_name = "UserSerializerCustom"
