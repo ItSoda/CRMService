@@ -5,8 +5,8 @@ services:
     image: mysql:latest
     container_name: mysql-crm
     restart: always
-    env_file:
-      - docker-compose.env
+    environment:
+      - MYSQL_DATABASE=CRMService_prod
     volumes:
       - mysql_data:/var/lib/mysql/
 
@@ -31,9 +31,9 @@ services:
         poetry run python manage.py migrate &&
         ngrok authtoken 2YAjzb799W5sMx82p3azikH2sP2_3KNzf4kzjVayk11njbvC8 &&
         ngrok http -hostname=boar-still-alpaca.ngrok-free.app 8000 &
-        poetry run gunicorn CRMService.wsgi:application -b :8000
-        poetry run python manage.py startbot
-        poetry run celery -A CRMService -l info -S solo
+        poetry run gunicorn CRMService.wsgi:application -b :8000 &&
+        poetry run python manage.py startbot &&
+        poetry run celery -A CRMService worker -l info -S solo
     environment:
       - DOCKER_CONTAINER=True
     env_file:
