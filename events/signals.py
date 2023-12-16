@@ -17,4 +17,5 @@ def update_user_field(sender, instance, created, **kwargs):
         user.save()
 
         users = instance.participian.all()
-        send_email_new.delay(users, instance)
+        user_ids = [user.id for user in users]
+        send_email_new.delay(user_ids=user_ids, instance_text=instance.text_for_email)
