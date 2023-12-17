@@ -8,6 +8,10 @@ class Tags(models.Model):
 
     name = models.CharField(max_length=100, unique=True)
 
+    class Meta:
+        verbose_name = "тег"
+        verbose_name_plural = "теги"
+
     def __str__(self) -> str:
         return f"name: {self.name}"
 
@@ -18,6 +22,10 @@ class Teams(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)
     members = models.ManyToManyField(to=Users, related_name="users_members")
+
+    class Meta:
+        verbose_name = "команда"
+        verbose_name_plural = "команды"
 
     def __str__(self) -> str:
         return f"name: {self.name}"
@@ -44,6 +52,10 @@ class Events(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     ended_at = models.DateTimeField(null=True, blank=True)
     text_for_email = models.TextField(null=True, blank=True)
+
+    class Meta:
+        verbose_name = "мероприятие"
+        verbose_name_plural = "мероприятия"
 
     def __str__(self) -> str:
         return f"name: {self.name} | tags: {self.tags.name}"

@@ -5,16 +5,17 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
+from events.permissions import IsCreatorUser
+from events.services import (event_update_participation, event_update_winner,
+                             fetch_team, user_update_participation,
+                             user_update_winner)
 from users.serializers import UserSerializer
 
-from events.permissions import IsCreatorUser
-from events.services import (event_update_participation, event_update_winner, fetch_team,
-                             user_update_participation, user_update_winner)
-
 from .models import Events, Reviews, Teams
-from .serializers import (EventCreateSerializer, EventSerializer, EventMainSerializer,
-                          ReviewCreateSerializer, ReviewSerializer,
-                          TeamCreateSerializer, TeamSerializer)
+from .serializers import (EventCreateSerializer, EventMainSerializer,
+                          EventSerializer, ReviewCreateSerializer,
+                          ReviewSerializer, TeamCreateSerializer,
+                          TeamSerializer)
 
 
 class EventViewSet(ModelViewSet):
@@ -46,9 +47,12 @@ def get_team(request, user_id):
                 }
             )
         else:
-            return Response({"status_code": 404, "data": [], "detail": f"Team not found"})
+            return Response(
+                {"status_code": 404, "data": [], "detail": f"Team not found"}
+            )
     except Exception as e:
         return Response({"status_code": 500, "data": [], "detail": f"Error {str(e)}"})
+
 
 @api_view(["POST"])
 def add_participants(request, event_id):
@@ -102,7 +106,7 @@ class TeamViewSet(ModelViewSet):
     def create(self, request, *args, **kwargs):
         self.get_serializer = TeamCreateSerializer
         return super().create(request, *args, **kwargs)
-    
+
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
 

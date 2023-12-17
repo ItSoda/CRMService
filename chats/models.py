@@ -12,6 +12,10 @@ class Room(models.Model):
         Users, related_name="current_rooms", blank=True
     )
 
+    class Meta:
+        verbose_name = "комната"
+        verbose_name_plural = "комнаты"
+
     def __str__(self):
         return f"Room({self.name} {self.host} {self.id})"
 
@@ -24,6 +28,10 @@ class Message(models.Model):
     sender = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="messages")
     image = models.ImageField(upload_to="message_images", null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "сообщение"
+        verbose_name_plural = "сообщения"
 
     def __str__(self):
         return f"Message({self.sender} {self.room})"

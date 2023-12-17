@@ -1,8 +1,9 @@
+from django.db.models import BooleanField, ExpressionWrapper, F, Value
 from django.shortcuts import get_object_or_404
 
 from events.models import Events, Teams
 from users.models import Users
-from django.db.models import BooleanField, ExpressionWrapper, F, Value
+
 
 def get_event(event_id):
     event = get_object_or_404(Events, id=event_id)
