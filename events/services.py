@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404
 
 from events.models import Events, Teams
 from users.models import Users
-
+from django.db.models import BooleanField, ExpressionWrapper, F, Value
 
 def get_event(event_id):
     event = get_object_or_404(Events, id=event_id)
@@ -48,8 +48,12 @@ def user_update_create_event(user):
     user.save()
 
 
-def get_team(user_id):
-    team = Teams.objects.filter(members__id=user_id).first()
-    if team:
-        return team
-    return []
+def fetch_team(user_id):
+    try:
+        user = Users.objects.get(id=user_id)
+        teams = Teams.objects.all()
+        for team in teams:
+            if user in team.members.all():
+                return team
+    except Teams.DoesNotExist:
+        return None

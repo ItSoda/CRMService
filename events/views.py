@@ -8,11 +8,11 @@ from rest_framework.viewsets import ModelViewSet
 from users.serializers import UserSerializer
 
 from events.permissions import IsCreatorUser
-from events.services import (event_update_participation, event_update_winner, get_team,
+from events.services import (event_update_participation, event_update_winner, fetch_team,
                              user_update_participation, user_update_winner)
 
 from .models import Events, Reviews, Teams
-from .serializers import (EventCreateSerializer, EventSerializer,
+from .serializers import (EventCreateSerializer, EventSerializer, EventMainSerializer,
                           ReviewCreateSerializer, ReviewSerializer,
                           TeamCreateSerializer, TeamSerializer)
 
@@ -24,6 +24,7 @@ class EventViewSet(ModelViewSet):
 
     @method_decorator(cache_page(70))
     def list(self, request, *args, **kwargs):
+        self.get_serializer = EventMainSerializer
         return super().list(request, *args, **kwargs)
 
     def create(self, request, *args, **kwargs):
@@ -34,18 +35,20 @@ class EventViewSet(ModelViewSet):
 @api_view(["GET"])
 def get_team(request, user_id):
     try:
-        team = get_team(user_id)
-
-        serializer_data = UserSerializer(team).data
-        return Response(
-            {
-                "status_code": 200,
-                "data": serializer_data,
-                "detail": "Get team",
-            }
-        )
+        team = fetch_team(user_id)
+        if team:
+            serializer_data = TeamSerializer(team).data
+            return Response(
+                {
+                    "status_code": 200,
+                    "data": serializer_data,
+                    "detail": "Get team",
+                }
+            )
+        else:
+            return Response({"status_code": 404, "data": [], "detail": f"Team not found"})
     except Exception as e:
-        return Response({"status_code": 500, "data": [], "detail": f"None"})
+        return Response({"status_code": 500, "data": [], "detail": f"Error {str(e)}"})
 
 @api_view(["POST"])
 def add_participants(request, event_id):

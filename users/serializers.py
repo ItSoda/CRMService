@@ -55,5 +55,5 @@ class UserSerializer(UserSerializer):
 
     class Meta(UserSerializer.Meta):
         model = Users
-        fields = ("id", "username", "last_name", "first_name", "photo")
+        fields = ("id", "username", "last_name", "first_name", "photo", "roles")
         ref_name = "UserSerializerCustom"

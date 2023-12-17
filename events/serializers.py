@@ -85,6 +85,12 @@ class EventSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class EventMainSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Events
+        fields = ("id", "name", "photo", "created_at")
+
+
 class ReviewCreateSerializer(serializers.ModelSerializer):
     event = serializers.IntegerField(write_only=True)
     user = serializers.IntegerField(write_only=True)

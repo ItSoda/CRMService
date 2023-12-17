@@ -16,7 +16,7 @@ class RolesAdmin(admin.ModelAdmin):
 
 @admin.register(Users)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ("email", "first_name")
+    list_display = ("email", "id")
     inlines = (EmailVerificationAdmin,)
     readonly_fields = ("last_login", "date_joined")
     filter_horizontal = ["roles"]

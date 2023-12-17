@@ -46,7 +46,7 @@ class Users(AbstractUser):
         verbose_name_plural = "Пользователи"
 
     def __str__(self):
-        return f"Пользователь {self.username} | {self.first_name}"
+        return f"Пользователь {self.username} | {self.id}"
 
 
 class EmailPost(models.Model):
