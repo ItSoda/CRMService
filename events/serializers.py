@@ -86,6 +86,7 @@ class EventSerializer(serializers.ModelSerializer):
 
 
 class EventMainSerializer(serializers.ModelSerializer):
+    created_at = serializers.DateTimeField(format="%d-%m")
     class Meta:
         model = Events
         fields = ("id", "name", "image", "created_at")
