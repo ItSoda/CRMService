@@ -88,7 +88,7 @@ class EventSerializer(serializers.ModelSerializer):
 class EventMainSerializer(serializers.ModelSerializer):
     class Meta:
         model = Events
-        fields = ("id", "name", "photo", "created_at")
+        fields = ("id", "name", "image", "created_at")
 
 
 class ReviewCreateSerializer(serializers.ModelSerializer):
